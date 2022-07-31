@@ -1,5 +1,4 @@
 import express from 'express'
-import dotenv from 'dotenv'
 import expressLayouts from 'express-ejs-layouts'
 import passport from 'passport'
 import session from 'express-session'
@@ -17,7 +16,6 @@ import {
   resetPassword,
 } from './db.js'
 import Validator from './model/validator.js'
-dotenv.config({ path: 'backend/config/.env' })
 
 const app = express()
   .set('view engine', 'ejs')

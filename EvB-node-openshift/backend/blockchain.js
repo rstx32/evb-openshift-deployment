@@ -1,4 +1,3 @@
-import dotenv from 'dotenv'
 import sha265 from 'crypto-js/sha256.js'
 import { getCandidates } from './getAPI.js'
 import { broadcastChain } from './p2p.js'

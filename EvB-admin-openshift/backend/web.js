@@ -1,5 +1,3 @@
-import dotenv from 'dotenv'
-dotenv.config({ path: 'backend/config/.env' })
 import * as fs from 'fs'
 import express from 'express'
 import expressLayouts from 'express-ejs-layouts'

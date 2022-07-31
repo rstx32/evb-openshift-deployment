@@ -1,6 +1,5 @@
 import express, { urlencoded } from 'express'
 import session from 'express-session'
-import dotenv from 'dotenv'
 import passport from 'passport'
 import LocalStrategy from 'passport-local'
 import flash from 'connect-flash'

@@ -1,7 +1,5 @@
 import fetch from 'node-fetch'
-import dotenv from 'dotenv'
 import jsonwebtoken from 'jsonwebtoken'
-dotenv.config({ path: 'backend/config/.env' })
 
 // generate JWT for API Auth
 const token = jsonwebtoken.sign({ username: process.env.NODE_ID }, process.env.JWT, {

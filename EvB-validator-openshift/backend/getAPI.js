@@ -1,7 +1,5 @@
 import fetch from 'node-fetch'
-import dotenv from 'dotenv'
 import { getSingleValidator } from './db.js'
-dotenv.config({ path: 'backend/config/.env' })
 
 const getVoters = async (query, validatorID) => {
   // if query is empty, then add default query

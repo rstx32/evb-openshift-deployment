@@ -1,4 +1,3 @@
-import dotenv from 'dotenv'
 import mongoose from 'mongoose'
 import bcrypt from 'bcryptjs'
 import fs from 'fs'
@@ -11,7 +10,6 @@ import jwt from 'jsonwebtoken'
 import randomstring from 'randomstring'
 import {gmail, mailtrap, ethereal} from './email.js'
 import ejs from 'ejs'
-dotenv.config({ path: 'backend/config/.env' })
 mongoose.connect(`${process.env.MONGODB_URL}`)
 
 //////////// voter ///////////////
