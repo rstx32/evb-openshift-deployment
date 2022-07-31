@@ -39,8 +39,7 @@
 
 **JWT**, *a random string, ex: "ybgaiwrbg987igun"*
 
-*account for validator, format: username email, ex: "validatorA validatora@gmail.com
-**ACCOUNT**, *validatorB validatorb@gmail.com"
+**ACCOUNT**, *account for validator, format: username email, ex: "validatorA validatora@gmail.com validatorB validatorb@gmail.com"*
 
 **USERNAME_EMAIL**, *fake email service username, ex: "iinbagwiry"*
 
@@ -60,3 +59,12 @@
 **NODE_ID**, *name of this node, ex: "evb-node1"*
 
 **PUBLIC_URL**, *evb-admin link for public accessible, ex: "localhost:8080"*
+
+## Environment MongoDB
+**MONGO_INITDB_ROOT_USERNAME**, *root username*
+
+**MONGO_INITDB_ROOT_PASSWORD**, *root password*
+
+## Environment Mongo Express
+https://hub.docker.com/_/mongo-express
+
