@@ -1,0 +1,93 @@
+<% if (typeof voting==='undefined') { %>
+    <!-- Content Row -->
+    <div class="row">
+        <div class="col-lg mb">
+            <!-- Illustrations -->
+            <div class="card shadow mb">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Hasn't vote yet</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+<% } else { %>
+    <% if (flashMessage.successMessage.length>0) { %>
+        <!-- flash message -->
+        <div class="card mb-4 py-3 border-left-success">
+            <div class="card-body">
+                <%= flashMessage.successMessage %> 
+            </div>
+        </div>
+    <% } %>
+    <% if (flashMessage.errorMessage.length>0) { %>
+        <!-- flash message -->
+        <div class="card mb-4 py-3 border-left-danger">
+            <div class="card-body">
+                <%= flashMessage.errorMessage %> 
+            </div>
+        </div>
+    <% } %>
+
+        <!-- Content Row -->
+        <div class="row">
+            <div class="col-lg mb">
+                <!-- Illustrations -->
+                <div class="card shadow mb">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">My Vote</h6>
+                    </div>
+                    <div class="card-body table-responsive">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Index</th>
+                                    <td>:</td>
+                                    <td><%= voting.index %> </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Previous Hash</th>
+                                    <td>:</td>
+                                    <td><%= voting.previousHash %></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Timestamp</th>
+                                    <td>:</td>
+                                    <td><%= voting.timestamp %></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Voter ID</th>
+                                    <td>:</td>
+                                    <td><%= voting.data.voterID %></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Candidate ID</th>
+                                    <td>:</td>
+                                    <td><%= voting.data.candidateID %></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Signature</th>
+                                    <td>:</td>
+                                    <td><%= voting.data.signature %></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">hash</th>
+                                    <td>:</td>
+                                    <td><%= voting.hash %></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Difficulty</th>
+                                    <td>:</td>
+                                    <td><%= voting.difficulty %></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Nonce</th>
+                                    <td>:</td>
+                                    <td><%= voting.nonce %></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+<% } %> 

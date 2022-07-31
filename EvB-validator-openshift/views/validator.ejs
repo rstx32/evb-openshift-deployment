@@ -1,0 +1,68 @@
+<% if (errorMessage.length>0) { %>
+  <div class="card mb-4 py-3 border-left-danger">
+      <div class="card-body">
+          <code>
+              <%= errorMessage %> 
+          </code>
+      </div>
+  </div>
+<% } %>
+
+<!-- Content Row -->
+<div class="row">
+    <div class="col-lg-4">
+        <!-- card candidate -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Total Validator : <%= validator.length %></h6>
+            </div>
+            <div class="card-body">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Validator</th>
+                    <th scope="col">Voter validation</th>
+                    <th scope="col">Candidate validation</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <% let index=1 %> 
+                    <% validator.forEach(v => { %>
+                      <tr>
+                        <th scope="row"><%= index %></th>
+                        <td><%= v.username %> </td>
+                        <td>
+                          <% if (v.voter.status==='valid') { %>
+                            <div class="alert alert-success" role="alert">
+                              valid <i class="bi bi-check-square"></i>
+                            </div>
+                          <% } else if (v.voter.status==='invalid') { %>
+                            <div class="alert alert-danger" role="alert">
+                              invalid <i class="bi bi-x-square"></i>
+                            </div>
+                          <% } else {%>
+                            unvalidated
+                          <% } %>  
+                        </td>
+                        <td>
+                          <% if (v.candidate.status==='valid') { %>
+                            <div class="alert alert-success" role="alert">
+                              valid <i class="bi bi-check-square"></i>
+                            </div>
+                          <% } else if (v.candidate.status==='invalid') { %>
+                            <div class="alert alert-danger" role="alert">
+                              invalid <i class="bi bi-x-square"></i>
+                            </div>
+                          <% } else {%>
+                            unvalidated
+                          <% } %> 
+                        </td>
+                      </tr>
+                    <% index++ }) %>
+                  </tbody>
+              </table>
+            </div>
+        </div>
+    </div>
+  </div>

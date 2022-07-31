@@ -1,0 +1,209 @@
+<!-- Content Row -->
+<div class="container">
+    <div class="row h-100"> 
+        
+        <div class="col-sm-12 my-auto">
+            <% if (flashMessage.errorMessage.length>0) { %>
+                <% for( let index = 0; index < flashMessage.errorMessage.length; index++ ) { %>
+                    <div class="alert alert-danger" role="alert">
+                        <code>
+                            <%= flashMessage.errorMessage[index] %> 
+                        </code>
+                    </div>
+                    <br>
+                <% } %> 
+            <% } else if (flashMessage.successMessage.length>0) { %>
+                <div class="alert alert-success" role="alert">
+                    <%= flashMessage.successMessage %>
+                </div>
+            <% } %> 
+            
+            <!-- card voter -->
+            <div class="card shadow mb-4">
+                <!-- card header -->
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">List of All Voters (<%= voters.totalDocs %> voters)</h6>
+                </div>
+                <!-- card header -->
+
+                <!-- card body -->
+                <div class="card-body table-responsive">
+
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="col mb-3">
+                                <select class="form-select" id="displayItem" onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
+                                    <% for( let index = 0; index <= 100; index+=25 ) { %>
+                                        <% if (index === voters.limit) { %>
+                                            <option value="public?page=1&limit=<%= index %>" selected><%= index %></option>
+                                        <% } else{ %>
+                                            <option value="public?page=1&limit=<%= index %>"><%= index %></option>
+                                        <% } %> 
+                                    <% } %>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-10">
+                            <form action="/public" class="col mb-3 input-group" action="get">
+                                <input type="text" name="fullname" class="form-control" placeholder="search voter..." aria-label="search voter..." aria-describedby="button-addon2">
+                            </form>
+                        </div>
+                    </div>
+
+                    <table class="table">
+
+                        <!-- table header -->
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Fullname</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Nim</th>
+                            </tr>
+                        </thead>
+                        <!-- table header -->
+                        
+                        <!-- tabel content -->
+                        <tbody>
+                            <% num = voters.limit * (voters.page-1) %> 
+                            <% voters.docs.forEach((v) => { num++ %>
+                                <tr>
+                                    <th scope="row">
+                                        <%= num %>
+                                    </th>
+                                    <td>
+                                        <%= v.fullname %>
+                                    </td>
+                                    <td>
+                                        <%= v.email %>
+                                    </td>
+                                    <td>
+                                        <%= v.nim %> 
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                        <!-- end tabel content -->
+
+                    </table>
+
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                          <!-- previous page button -->
+                          <% if (voters.hasPrevPage) { %>
+                            <li class="page-item">
+                                <a class="page-link" href="/public?page=<%= voters.page-1 %>&limit=<%= voters.limit %>">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                          <% } else { %>      
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                          <% } %> 
+                          <!-- end previous page button -->
+                          
+                          <!-- pagination logic -->
+                          <% let modulo = voters.page%10 %>
+                          <% if (modulo===0) { %>
+                            <% modulo = 10 %> 
+                          <% } %>
+                          <% let startPage = (voters.page-modulo)+1 %>
+                          <% let endPage = startPage+9 %>
+    
+                          <% if (endPage>=voters.totalPages) { %>
+                            <% endPage = voters.totalPages %> 
+                          <% } %>
+                          <!-- end pagination logic -->
+    
+                          <!-- page selector -->
+                          <% for( let index = startPage; index <= endPage; index++ ) { %>
+                            <% if (voters.page === index) { %>
+                                <li class="page-item active">
+                                    <a class="page-link" href="/public?page=<%= index %>&limit=<%= voters.limit %>"><%= index %></a>
+                                </li>
+                            <% } else { %>
+                                <li class="page-item">
+                                    <a class="page-link" href="/public?page=<%= index %>&limit=<%= voters.limit %>"><%= index %></a>
+                                </li>
+                            <% } %> 
+                          <% } %>
+                          <!-- end page selector -->
+    
+                          <!-- next page button -->
+                          <% if (voters.hasNextPage) { %>
+                            <li class="page-item">
+                                <a class="page-link" href="/public?page=<%= voters.page+1 %>&limit=<%= voters.limit %>">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                          <% } else { %>      
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                          <% } %> 
+                          <!-- end next page button -->
+                        </ul>
+                    </nav>
+
+                </div>
+                <!-- end card body -->
+
+            </div>
+            <!-- end card voter -->
+
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Not listed?
+            </button>
+
+            <!-- Modal send complain -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form action="/public" method="post">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Complaint</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+    
+                            <div class="modal-body">
+                                <div class="row g-3 align-items-center" id="formReason">
+                                    <!-- email -->
+                                    <div class="form-floating">
+                                        <input type="email" name="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                                        <label for="floatingInput">Email address</label>
+                                    </div>
+    
+                                    <div class="form-floating ">
+                                        <textarea name="comment" class="form-control" placeholder="Leave a comment here" id="textReason"></textarea>
+                                        <label for="floatingTextarea">Comments</label>
+                                    </div>
+                                    <div class="col-auto">
+                                    <span id="text-help" class="form-text">
+                                        Write your complaint.
+                                    </span>
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal send complain -->
+        </div>
+                
+        <center>
+            <%- include('auth/homepage-link.ejs') %> 
+        </center>
+    </div>
+</div>
+<!-- End Content Row -->

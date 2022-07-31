@@ -1,0 +1,236 @@
+<!-- error flash -->
+<% if (flashMessage.errorMessage.length > 0) { %>
+    <div class="card mb-4 py-3 border-left-danger">
+        <div class="card-body">
+            <ul>-
+                <% flashMessage.errorMessage.forEach(e => { %>
+                    <li>
+                        <%= e.message %>
+                    </li>
+                <% }); %>
+            </ul>
+        </div>
+    </div>
+<% } %>
+<!-- end error flash -->
+
+<!-- success flash -->
+<% if (flashMessage.successMessage.length > 0) { %>
+    <div class="card mb-4 py-3 border-left-success">
+        <div class="card-body">
+            <%= flashMessage.successMessage %>
+        </div>
+    </div>
+<% } %>
+<!-- end success flash -->
+
+<div class="row">
+    <!-- card candidate count -->
+    <div class="col-xl-2 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Total Candidate
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800"><%= candidate.length %></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end card candidate count -->
+
+    <% if (adminStatus==='allow') { %>
+        <!-- card add candidate -->
+        <div class="col-lg-2 col-md-9 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <!-- modal button add candidate -->
+                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addCandidate">
+                        <i class="bi bi-person-plus">Add Candidate</i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- card add candidate -->
+    <% } else { %>
+        <!-- card admin locked -->
+        <div class="col-lg-2 col-md-9 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Data Locked
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">Candidates data has been locked</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end card admin locked -->
+    <% } %>
+</div>
+
+<% count = 0 %> 
+<% validator.forEach( v => { %>
+    <% if (v.candidate.status==='invalid') { %>
+        <%  count++ %> 
+    <% } %>
+<% }) %>
+
+<% if (count>0) { %>
+    <!-- Error validation table -->
+    <div class="row">
+        <div class="col-lg-4">
+            <!-- card candidate -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-danger">candidate Error!</h6>
+                </div>
+                <div class="card-body">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Reason</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Solve</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <% let index=1 %> 
+                        <% validator.forEach( v => { %>
+                            <% if (v.candidate.status==="invalid") { %>
+                                <tr>
+                                  <th scope="row"><%= index %></th>
+                                  <td><%= v.candidate.reason %></td>
+                                  <td>
+                                      <% if (v.candidate.solve==='solved') { %>
+                                        solved, waiting for validator response
+                                      <% } else if (v.candidate.solve==='reject') { %>
+                                        rejected, please solve the error
+                                      <% } else { %>
+                                        <%= v.candidate.solve %>  
+                                      <% } %> 
+                                  </td>
+                                  <td>
+
+                                    <% if (v.candidate.solve==='solved') { %>
+                                     -
+                                    <% } else { %> 
+                                        <!-- Button trigger modal -->
+                                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#solveConfirmation-<%= v.validator %>">
+                                            <i class="bi bi-check2-square"></i>
+                                        </button>
+                                        <!-- Button trigger modal -->
+
+                                        <!-- Modal box solve confirmation -->
+                                        <div class="modal fade" id="solveConfirmation-<%= v.validator %>" tabindex="-1" aria-labelledby="solveConfirmation" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Have you been solve this error?</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+
+                                                    <div class="modal-body">
+                                                        <%= v.candidate.reason %>
+                                                    </div>
+
+                                                    <div class="modal-footer">
+                                                        <form action="/solve/candidate" method="post" id="formSolve">
+                                                            <input type="hidden" name="validator" value="<%= v._id %>">
+                                                            <button type="submit" class="btn btn-success">Yes, it's solved</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Modal box solve confirmation -->
+                                    <% } %> 
+                                  </td>
+                                </tr>
+                                <%  index++ %> 
+                            <% } %>
+                        <% }) %>
+                      </tbody>
+                  </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Error validation table -->
+<% } %>
+
+<div class="row">
+    <% candidate.forEach(c=> { %>
+    <div class="col-lg mb">
+    
+        <!-- card candidate -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary"><%= c.candidate %></h6>
+            </div>
+            <div class="card-body">
+                <div class="text-center">
+                    <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;" src="/photo/candidates/<%= c.photo %>" alt="...">
+                </div>
+                <h5 class="card-title">
+                    <%= c.candidate %>
+                </h5>
+                <h6 class="card-subtitle mb-2 text-muted"><%= c.viceCandidate %></h6>
+                
+                <% if (adminStatus==='allow') { %>
+                    <form method="post" action="/candidates?_method=DELETE">
+                        <input type="hidden" name="id" value="<%= c._id %>">
+                        <button class="btn btn-danger btn-circle" type="submit" data-bs-dismiss="modal" onclick="return confirm('are you sure?')"> 
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
+                <% } %>
+            </div>
+        </div>
+    
+    </div>
+    <% }); %>
+</div>
+
+<!-- modal box add candidate -->
+<div class="modal fade" id="addCandidate" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <!-- modal header -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Candidate</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <!-- modal body -->
+            <div class="modal-body">
+                <!-- form -->
+                <form method="post" action="/candidates" enctype="multipart/form-data">
+                    <!-- candidate -->
+                    <div class="input-group mb-3">
+                        <input type="text" name="candidate" class="form-control" placeholder="candidate name">
+                    </div>
+                    <!-- vice candidate -->
+                    <div class="input-group mb-3">
+                        <input type="text" name="viceCandidate" class="form-control" placeholder="vice candidate name">
+                    </div>
+                    <!-- photo upload -->
+                    <div class="mb-3">
+                        <label for="formFileSm" class="form-label">Candidate Photo Upload</label>
+                        <input class="form-control form-control-sm" name="candidatePhotoUpload" type="file" accept=".jpg, .jpeg">
+                    </div>
+                    <!-- submit -->
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+                <!-- end form -->
+            </div>
+        </div>
+    </div>
+</div>

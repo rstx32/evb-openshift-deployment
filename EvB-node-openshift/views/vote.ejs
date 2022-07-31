@@ -1,0 +1,205 @@
+<!-- Content Row -->
+<div class="row">
+    
+    <% candidate.forEach(c => { %>
+        <div class="col-lg mb">
+            <!-- card candidate -->
+            <div class="card shadow mb">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary"><%= c.candidate %> </h6>
+                </div>
+                <div class="card-body">
+                    <div class="text-center">
+                        <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;" src="http://<%= process.env.PUBLIC_URL %>/photo/candidates/<%= c.photo %>" alt="...">
+                    </div>
+                    <p><b><%= c.candidate %> </b></p>
+                    <p><b><%= c.viceCandidate %> </b></p>
+                    <!-- Button trigger modal -->
+                    <button class="btn btn-success btn-icon-split" data-bs-toggle="modal" data-bs-target="#confirmVote-<%= c._id %>" name="confirmButton">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-check"></i>
+                        </span>
+                        <span class="text">Vote!</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="confirmVote-<%= c._id %>" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel-<%= c._id %>"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmModalLabel-<%= c._id %>">Are You Sure?</h5>
+                    </div>
+
+                    <div class="modal-body">
+                        <!-- hidden form -->
+                        <form method="post" action="/vote" id="formVoting">
+                            <input type="hidden" name="voterID" id="voterID" value="<%= voter._id %>">
+                            <input type="hidden" name="candidateID" id="candidateID">
+                            <input type="hidden" name="signature" id="signature">
+                        </form>
+                        
+                        <!-- checkbox form -->
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="checkboxConfirmation-<%= c._id %>" onchange="enableVoteButton('<%= c._id %>')">
+                            <label class="form-check-label">
+                                Yes, i'm sure to vote <b><%= c.candidate %></b>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary" onclick="proses('<%= c._id %>')" id="voteButton-<%= c._id %>" name="voteButton">Vote!</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    <% }) %>
+    
+</div>
+
+<div class="row" style="margin-top: 30px;">
+    <div class="col"></div>
+        <div class="col-lg-3">
+            <!-- card candidate -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Upload Private Key</h6>
+                </div>
+                <div class="card-body">
+                    <input type="file" name="inputfile" id="inputfile"><br>
+                </div>
+            </div>
+        </div>
+    <div class="col"></div>
+</div>
+
+<input type="hidden" id="voterNIM" value="<%= user %>">
+
+<script>
+    let inputButton = document.getElementById('inputfile')
+    let privateKey = ''
+    var confirmBtn = document.getElementsByName('confirmButton')
+    for (let index = 0; index < confirmBtn.length; index++) {
+        confirmBtn[index].disabled = true
+    }
+    
+    inputButton.addEventListener('change', function () {
+        let voter = document.getElementById('voterNIM').value
+        let filename = this.files[0].name
+        let filenameShould = `${voter}-private_key.pem`
+        
+        if (filename !== filenameShould) {
+            window.alert('filename is not match to voter ID! => ' + filenameShould)
+        } else {
+            var fr = new FileReader()
+            fr.onload = function () {
+                const check = fr.result
+                if (
+                    !check.includes('-----BEGIN PRIVATE KEY-----') ||
+                    !check.includes('-----END PRIVATE KEY-----')
+                    ) {
+                    for (let index = 0; index < confirmBtn.length; index++) {
+                        confirmBtn[index].disabled = true
+                    }
+
+                    window.alert('isi private key tidak sah!')
+                } else {
+                    privateKey = check
+                    
+                    for (let index = 0; index < confirmBtn.length; index++) {
+                        confirmBtn[index].disabled = false
+                    }
+                }
+            }
+            fr.readAsText(this.files[0])
+        }
+    })
+
+    async function proses(candidate) {
+        const signature = document.getElementById('signature')
+        const candidateForm = document.getElementById('candidateID')
+        const form = document.getElementById('formVoting')
+        candidateForm.value = candidate
+        console.log(candidateForm.value)
+        console.log(privateKey)
+
+        try {
+            function str2ab(str) {
+                const buf = new ArrayBuffer(str.length)
+                const bufView = new Uint8Array(buf)
+                for (let i = 0, strLen = str.length; i < strLen; i++) {
+                    bufView[i] = str.charCodeAt(i)
+                }
+                return buf
+            }
+        
+            function ab2str(buf) {
+                return String.fromCharCode.apply(null, new Uint8Array(buf))
+            }
+        
+            function importPrivateKey(pem) {
+                const pemHeader = '-----BEGIN PRIVATE KEY-----'
+                const pemFooter = '-----END PRIVATE KEY-----'
+                const pemContents = pem.substring(
+                    pemHeader.length,
+                    pem.length - pemFooter.length
+                )
+                const binaryDerString = window.atob(pemContents)
+                const binaryDer = str2ab(binaryDerString)
+            
+                return window.crypto.subtle.importKey(
+                    'pkcs8',
+                    binaryDer,
+                    {
+                    name: 'RSASSA-PKCS1-v1_5',
+                    hash: 'SHA-256',
+                    },
+                    true,
+                    ['sign']
+                )
+            }
+        
+            function getMessageEncoding() {
+                let message = candidate
+                let enc = new TextEncoder()
+                return enc.encode(message)
+            }
+            
+            const privKey = await importPrivateKey(privateKey)
+            let encoded = getMessageEncoding()
+            let sig = await window.crypto.subtle.sign('RSASSA-PKCS1-v1_5', privKey, encoded)
+        
+            const exportedAsString = ab2str(sig)
+            const exportedAsBase64 = window.btoa(exportedAsString)
+
+        
+            signature.value = exportedAsBase64
+            form.submit()
+        } catch (error) {
+            alert('your private key is invalid!')
+        }
+    }
+
+</script>
+
+<script>
+    var btn = document.getElementsByName('voteButton')
+    
+    for (let index = 0; index < btn.length; index++) {
+        btn[index].disabled = true
+    }
+    
+    function enableVoteButton(candidateID){
+        var checkbox = document.getElementById(`checkboxConfirmation-${candidateID}`)
+        var vBtn = document.getElementById(`voteButton-${candidateID}`)
+
+        checkbox.checked ? vBtn.disabled = false : vBtn.disabled = true
+    }
+</script>

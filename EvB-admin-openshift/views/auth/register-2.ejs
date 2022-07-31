@@ -1,0 +1,183 @@
+<main class="form-signin">
+    <form action="/register2" method="post" id="formRegister">
+        <img class="mb-4" src="/EvB.png" alt="EvB icon" width="120" height="120">
+        <h1 class="h3 mb-3 fw-normal">EvB Voter Registration</h1>
+
+        <input type="hidden" id="id" value="<%= voter.nim %>">
+
+        <div class="form-floating">
+            <input name="nim" id="nim" type="text" class="form-control" placeholder="Voter nim" value="<%= voter.nim %>"
+                readonly>
+            <label for="floatingInput">NIM</label>
+        </div>
+        <div class="form-floating">
+            <input name="password" id="password" type="password" class="form-control" placeholder="Password"
+                oninput="checkMatch()">
+            <label for="floatingPassword">Password</label>
+        </div>
+        <div class="form-floating">
+            <input name="confirmPassword" id="confirmPassword" type="password" class="form-control"
+                placeholder="Confirm Password" oninput="checkMatch()">
+            <label for="floatingPassword">Confirm Password</label>
+        </div>
+        <input type="hidden" name="public_key" id="public_key">
+
+        <!-- alert danger for password not match -->
+        <div class="alert alert-danger" role="alert" id="passwordMatch">
+            password is not match!
+        </div>
+        
+        <!-- alert danger for password length -->
+        <div class="alert alert-danger" role="alert" id="passwordLength">
+            password must be at least 5 characters!
+        </div>
+
+        <% if (typeof error !='undefined' ) { %>
+            <div class="alert alert-danger" role="alert">
+                <%= error %>
+            </div>
+        <% } %>
+
+        <!-- Button trigger modal -->
+        <!-- <div id="register"> -->
+            <button id="register" type="button" class="w-100 btn btn-lg btn-primary" data-bs-toggle="modal"
+                data-bs-target="#staticBackdrop" disabled>
+                Register
+            </button>
+        <!-- </div> -->
+
+        <!-- Modal -->
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">README!</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            keep your private key secret! do not share with anyone, do not lose your key,
+                            this key will be your access to vote!
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" onclick="send()">Register</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p class="mt-5 mb-3 text-muted">&copy; rstx</p>
+    </form>
+</main>
+
+<script>
+    var form = document.getElementById("formRegister")
+    var id = document.getElementById("id").value
+    var pubKey = document.getElementById("public_key")
+
+    document.getElementById("passwordLength").style.display = "none";
+    document.getElementById("passwordMatch").style.display = "none";
+
+    // check password and confirmation password
+    function checkMatch() {
+        var pass = document.getElementById("password").value;
+        var confPass = document.getElementById("confirmPassword").value;
+        var warning = document.getElementById("passwordMatch");
+        var warning2 = document.getElementById("passwordLength")
+        var register = document.getElementById("register")
+
+        // if confirmation password is empty, registration button is disabled
+        // if password & confirmation password isn't match, registration button is disabled, give warning
+        // if password & confirmation password is match, registration button is enabled
+        if (pass.length > 0 && confPass == "") {
+            warning.style.display = "none";
+            register.disabled = true;
+        } else if (confPass !== pass) {
+            warning.style.display = "block";
+            register.disabled = true;
+        } else {
+            warning.style.display = "none";
+            warning2.style.display = "none";
+            register.disabled = false;
+        }
+
+        // check password length
+        if(pass.length!==0 && pass.length<5){
+            warning2.style.display = "block";
+            register.disabled = true;
+        }else{
+            warning2.style.display = "none";
+        }
+    }
+
+    function ab2str(buf) {
+        return String.fromCharCode.apply(null, new Uint8Array(buf))
+    }
+
+    async function exportCryptoPrivKey(key) {
+        const exported = await window.crypto.subtle.exportKey('pkcs8', key)
+        const exportedAsString = ab2str(exported)
+        const exportedAsBase64 = window.btoa(exportedAsString)
+        const pemExported = `-----BEGIN PRIVATE KEY-----\n${exportedAsBase64}\n-----END PRIVATE KEY-----`
+
+        await downloadProcess(id , pemExported, 'private_key')
+    }
+
+    async function exportCryptoPubKey(key) {
+        const exported = await window.crypto.subtle.exportKey('spki', key)
+        const exportedAsString = ab2str(exported)
+        const exportedAsBase64 = window.btoa(exportedAsString)
+        const pemExported = `-----BEGIN PUBLIC KEY-----\n${exportedAsBase64}\n-----END PUBLIC KEY-----`
+
+        pubKey.value = pemExported;
+        // await downloadProcess(id, pemExported, 'public_key')
+        // post data form to server
+        form.submit();
+    }
+
+    // generate rsa pair key
+    // submit form
+    // save both key to client
+    async function send() {
+        window.crypto.subtle
+            .generateKey(
+                {
+                    name: 'RSASSA-PKCS1-v1_5',
+                    modulusLength: 2048,
+                    publicExponent: new Uint8Array([1, 0, 1]),
+                    hash: 'SHA-256',
+                },
+                true,
+                ['sign', 'verify']
+            )
+            .then((keyPair) => {
+                exportCryptoPrivKey(keyPair.privateKey)
+                exportCryptoPubKey(keyPair.publicKey)
+            })
+    }
+
+    // function to download public & private key
+    function downloadProcess(id, key, type) {
+        return new Promise((resolve, reject) => {
+            download(`${id}-${type}.pem`, key);
+            resolve()
+        })
+    }
+
+    // function to download file
+    function download(filename, text) {
+        var element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+        element.setAttribute('download', filename);
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
+    }
+</script>

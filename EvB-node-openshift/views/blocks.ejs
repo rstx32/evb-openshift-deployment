@@ -1,0 +1,194 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+
+<!-- Content Row -->
+<div class="row">
+    <div class="col-lg-6 mb">
+        <!-- blocks card -->
+        <div class="card shadow mb">
+            <!-- card header -->
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">List of All Blocks</h6>
+            </div>
+            <!-- card header -->
+            
+            <div class="card-body">
+
+                <div class="row justify-content-start">
+                    <div class="col-sm-2">
+                        <div class="col mb-3">
+                            <select class="form-select" id="displayItem" onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
+                                <% for( let index = 0; index <= 100; index+=25 ) { %>
+                                    <% if (index === blocks.limit) { %>
+                                        <option value="blocks?page=1&limit=<%= index %>" selected><%= index %></option>
+                                    <% } else{ %>
+                                        <option value="blocks?page=1&limit=<%= index %>"><%= index %></option>
+                                    <% } %> 
+                                <% } %>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- blocks content -->
+                    <div class="accordion table-responsive" id="accordionExample">
+                        <% blocks.data.forEach(b=> { %>
+                            <div class="accordion-item">
+        
+                                <h2 class="accordion-header" id="heading-<%= b.index %>">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapse-<%= b.index %>" aria-expanded="false"
+                                        aria-controls="collapse-<%= b.index %>">
+                                        <%= b.hash %>
+                                    </button>
+                                </h2>
+        
+                                <div id="collapse-<%= b.index %>" class="accordion-collapse collapse"
+                                    aria-labelledby="heading-<%= b.index %>" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body table-responsive">
+                                        <table class="table">
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row">Index</th>
+                                                    <td>:</td>
+                                                    <td>
+                                                        <%= b.index %>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Previous Hash</th>
+                                                    <td>:</td>
+                                                    <td>
+                                                        <%= b.previousHash %>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Timestamp</th>
+                                                    <td>:</td>
+                                                    <td>
+                                                        <%= b.timestamp %>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Voter ID</th>
+                                                    <td>:</td>
+                                                    <td>
+                                                        <%= b.data.voterID %>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Candidate ID</th>
+                                                    <td>:</td>
+                                                    <td>
+                                                        <%= b.data.candidateID %>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Signature</th>
+                                                    <td>:</td>
+                                                    <td>
+                                                        <%= b.data.signature %>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">hash</th>
+                                                    <td>:</td>
+                                                    <td>
+                                                        <%= b.hash %>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Difficulty</th>
+                                                    <td>:</td>
+                                                    <td>
+                                                        <%= b.difficulty %>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Nonce</th>
+                                                    <td>:</td>
+                                                    <td>
+                                                        <%= b.nonce %>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+        
+                            </div>
+                            <% }) %>
+                    </div>
+                    <!-- end blocks content -->
+                </div>
+
+                
+            </div>
+            
+            <!-- page navigation button -->
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                <!-- previous page button -->
+                <% if (blocks.hasPrevPage) { %>
+                    <li class="page-item">
+                        <a class="page-link" href="/blocks?page=<%= blocks.page-1 %>&limit=<%= blocks.limit %>">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                <% } else { %>      
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                <% } %> 
+                <!-- end previous page button -->
+
+                <!-- pagination logic -->
+                <% let modulo = blocks.page%10 %>
+                <% if (modulo===0) { %>
+                  <% modulo = 10 %> 
+                <% } %>
+                <% let startPage = (blocks.page-modulo)+1 %>
+                <% let endPage = startPage+9 %>
+
+                <% if (endPage>=blocks.totalPages) { %>
+                  <% endPage = blocks.totalPages %> 
+                <% } %>
+                <!-- end pagination logic -->
+
+                <!-- page selector -->
+                <% for( let index = startPage; index <= endPage; index++ ) { %>
+                    <% if (blocks.page === index) { %>
+                        <li class="page-item active">
+                            <a class="page-link" href="/blocks?page=<%= index %>&limit=<%= blocks.limit %>"><%= index %></a>
+                        </li>
+                    <% } else {%>
+                        <li class="page-item">
+                            <a class="page-link" href="/blocks?page=<%= index %>&limit=<%= blocks.limit %>"><%= index %></a>
+                        </li>
+                    <% } %> 
+                <% } %>
+                <!-- end page selector -->
+
+                <!-- next page button -->
+                <% if (blocks.hasNextPage) { %>
+                    <li class="page-item">
+                        <a class="page-link" href="/blocks?page=<%= blocks.page+1 %>&limit=<%= blocks.limit %>">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                <% } else { %>      
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                <% } %> 
+                <!-- end next page button -->                
+                </ul>
+            </nav>
+            <!-- page navigation button -->
+        </div>
+    </div>
+</div>

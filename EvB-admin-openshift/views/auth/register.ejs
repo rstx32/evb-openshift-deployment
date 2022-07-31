@@ -1,0 +1,45 @@
+<main class="form-signin">
+    <form action="/register" method="post" id="formRegister">
+        <img class="mb-4" src="/EvB.png" alt="" width="120" height="120">
+        <h1 class="h3 mb-3 fw-normal">EvB Voter Registration</h1>
+
+        <% if (flashMessage.errorMessage.length > 0 ) { %>
+            <div class="alert alert-danger" role="alert" id="errorMessage">
+                <%= flashMessage.errorMessage %>
+            </div>
+        <% } %>
+
+        <% if (flashMessage.successMessage.length > 0 ) { %>
+            <div class="alert alert-success" role="alert" id="successMessage">
+                <%= flashMessage.successMessage %>
+            </div>
+        <% } %>
+            
+        <div class="input-group mb-3 form-floating">
+            <input name="key" id="key" type="text" class="form-control" placeholder="Voter Key">
+            <label for="floatingInput">Voter Key</label>
+            <button class="btn btn-success" type="button" id="paste">Paste</button>
+        </div>
+
+        <button class="w-100 btn btn-lg btn-primary" type="submit">Register</button>
+        <p class="mt-5 mb-3 text-muted">&copy; rstx</p>
+        <%- include('homepage-link.ejs') %> 
+
+    </form>
+</main>
+
+<script>
+    var paste = document.getElementById("paste")
+    paste.addEventListener('click', async (event) => {
+        key.value = '';
+        const data = await navigator.clipboard.readText()
+        key.value = data
+    })
+
+    var key = document.getElementById("key");
+
+    key.onkeypress = function(){
+        if(document.getElementById("errorMessage"))
+            document.getElementById("errorMessage").style.display = "none";
+    }
+</script>

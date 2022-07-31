@@ -1,0 +1,224 @@
+<% if (errorMessage.length>0) { %>
+    <div class="card mb-4 py-3 border-left-danger">
+        <div class="card-body">
+            <code>
+                <%= errorMessage %> 
+            </code>
+        </div>
+    </div>
+<% } %>
+
+<% if (validator.candidate.reason!=='-') { %>
+    <!-- Content Row -->
+    <div class="row">
+        <div class="col-lg-5">
+            <!-- card candidate -->
+            <div class="card shadow mb-5">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-danger">Error submission</h6>
+                </div>
+                <div class="card-body">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th scope="col">Reason</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <%= validator.candidate.reason %> 
+                            </td>
+                            <td>
+                                <%= validator.candidate.solve %> 
+                            </td>
+                            <td>
+                                <% if (validator.candidate.solve==='unsolved' || validator.candidate.solve==='reject') { %>
+                                    -
+                                <% } else { %>
+                                    <form action="/solve/candidate" method="post">
+                                        <input type="hidden" name="validatorID" value="<%= validator._id %>">
+                                        <input type="hidden" name="acceptStatus" value="true">
+                                        <input type="submit" value="Accept">
+                                    </form>
+                                    <form action="/solve/candidate" method="post">
+                                        <input type="hidden" name="validatorID" value="<%= validator._id %>">
+                                        <input type="hidden" name="acceptStatus" value="false">
+                                        <input type="submit" value="Reject">
+                                    </form>
+                                <% } %> 
+                            </td>
+                        </tr>
+                      </tbody>
+                  </table>
+                </div>
+            </div>
+        </div>
+    </div>
+<% } %>
+
+<div class="row">
+    <!-- card candidate count -->
+    <div class="col-xl-2 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Total Candidate
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800"><%= candidates.length %></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end card candidate count -->
+
+    <% if (validator.candidate.status==='valid') { %>
+        <!-- card candidate count -->
+        <div class="col-xl-2 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Candidate has been validated
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">Valid</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end card candidate count -->
+    <% } %>
+
+    <% if (validator.candidate.solve==='-') { %>
+        <!-- card validate candidate -->
+        <div class="col-lg-2 col-md-9 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <!-- modal button validate candidate -->
+                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#validateCandidate">
+                        <i class="bi bi-person-plus"> Validate Candidate</i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- end card validate candidate -->
+    <% } %>
+</div>
+
+<!-- candidate list -->
+<div class="row">
+    <% candidates.forEach(c=> { %>
+    <div class="col-lg mb">
+    
+        <!-- card candidate -->
+        <div class="card shadow mb">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary"><%= c.candidate %></h6>
+            </div>
+            <div class="card-body">
+                <div class="text-center">
+                    <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;" src="http://<%=process.env.PUBLIC_URL%>/photo/candidates/<%= c.photo %>" alt="candidate photo">
+                </div>
+                <h5 class="card-title">
+                    <%= c.candidate %>
+                </h5>
+                <h6 class="card-subtitle mb-2 text-muted"><%= c.viceCandidate %></h6>
+            </div>
+        </div>
+    
+    </div>
+    <% }); %>
+</div>
+<!-- candidate list -->
+
+<!-- Modal confirm validation -->
+<div class="modal fade" id="validateCandidate" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Are You Sure?</h5>
+            </div>
+
+            <div class="modal-body">
+                <!-- hidden form -->
+                <form method="post" action="/validate/candidate" id="formSubmit">
+                    <input type="hidden" name="validator" id="validator" value="<%= validator._id %>">
+                    <input type="hidden" name="validation" id="validation">
+                    <input type="hidden" name="reason" id="reason">
+                </form>
+                
+                <!-- radio form -->
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="validOption" id="valid" onchange="hideTextbox()" value="valid">
+                    <label class="form-check-label" for="flexRadioDefault1">
+                        Yes, i'm sure that candidates data is <b>correct</b>
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="validOption" id="invalid" onchange="showTextbox()" value="invalid">
+                    <label class="form-check-label" for="flexRadioDefault2">
+                        Yes, i'm sure that candidates data is <b>incorrect</b>
+                    </label>
+                </div>
+                
+                <div class="row g-3 align-items-center" id="formReason">
+                    <br>
+                    <div class="form-floating">
+                        <textarea class="form-control" placeholder="Leave a comment here" id="textReason"></textarea>
+                        <label for="floatingTextarea">Comments</label>
+                      </div>
+                    <div class="col-auto">
+                      <span id="text-help" class="form-text">
+                        Write reason why voters data is invalid.
+                      </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-primary" onclick="proses()" id="submitButton" name="voteButton">Submit!</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    var btn = document.getElementById('submitButton')
+    var form = document.getElementById('formSubmit')
+    var radioValid =document.getElementById('valid') 
+    var radioInvalid = document.getElementById('invalid')
+    var textbox = document.getElementById('formReason')
+    btn.disabled = true
+    textbox.style.display = "none"
+
+    function proses(){
+        var ele = document.getElementsByName('validOption');
+              
+        for(i = 0; i < ele.length; i++) {
+            if(ele[i].checked)
+                document.getElementById("validation").value = ele[i].value;
+        }
+        document.getElementById('reason').value = document.getElementById('textReason').value
+        form.submit()
+    }
+
+    function showTextbox(){
+        textbox.style.display = "block"
+        btn.disabled = false
+    }
+
+    function hideTextbox(){
+        textbox.style.display = "none"
+        btn.disabled = false
+    }
+</script>

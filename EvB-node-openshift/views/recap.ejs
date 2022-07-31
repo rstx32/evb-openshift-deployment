@@ -1,0 +1,148 @@
+<!-- Content Row -->
+<div class="row" id="candidateCount">
+
+    <% recap.forEach(r => { %>
+        <div class="col-lg mb">
+            <!-- Illustrations -->
+            <div class="card shadow mb">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary"><%= r.candidate %> </h6>
+                </div>
+                <div class="card-body">
+                    <div class="text-center">
+                        <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;" src="http://<%= process.env.PUBLIC_URL %>/photo/candidates/<%= r.photo %>" alt="...">
+                    </div>
+                    <div class="text-center">
+                        <h3>
+                            Count : <b id="liveCount-<%- r._id %>"><%= r.count %></b> 
+                        </h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% }) %>
+
+</div>
+
+<div class="row" style="margin-top: 25px;">
+    <div class="col"></div>
+    <!-- Donut Chart -->
+    <div class="col-xl-64 col-lg-5">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Donut Chart</h6>
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+                <div class="chart-pie pt-4">
+                    <canvas id="myPieChart"></canvas>
+                </div>
+                <hr>
+                Current Leader is 
+                <h4>
+                    <b>
+                        <code>
+                            <a id="winner">
+                                x
+                            </a>
+                        </code>
+                    </b>
+                </h4>
+            </div>
+        </div>
+    </div>
+    <div class="col"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    var socket = io();
+
+    socket.on('broadcast', (message) => {
+        message.forEach(element => {
+            document.getElementById(`liveCount-${element._id}`).innerHTML = element.count;
+        });
+        createPieChart(message)
+    })
+</script>
+<script>
+    // Set new default font family and font color to mimic Bootstrap's default styling
+    Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+    Chart.defaults.global.defaultFontColor = '#858796';
+
+    var objectOfRecap = <%- JSON.stringify(recap)%>
+    createPieChart(objectOfRecap)
+
+    // Pie Chart
+    function createPieChart(data){
+        function getRandomColor() {
+            var letters = '0123456789ABCDEF'.split('');
+            var color = '#';
+            for (var i = 0; i < 6; i++ ) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        var color = []
+        for (let index = 0; index < data.length; index++) {
+            color[index] = getRandomColor();
+        }
+
+        var candidate = data.map(c => c.candidate)
+        var count = data.map(c => c.count)
+        var ctx = document.getElementById("myPieChart");
+        var myPieChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: candidate,
+                datasets: [{
+                    data: count,
+                    backgroundColor: color,
+                    hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
+                    hoverBorderColor: "rgba(234, 236, 244, 1)",
+                }],
+            },
+            options: {
+                maintainAspectRatio: false,
+                tooltips: {
+                    backgroundColor: "rgb(255,255,255)",
+                    bodyFontColor: "#858796",
+                    borderColor: '#dddfeb',
+                    borderWidth: 1,
+                    xPadding: 15,
+                    yPadding: 15,
+                    displayColors: false,
+                    caretPadding: 10,
+                },
+                legend: {
+                    display: false  
+                },
+                cutoutPercentage: 80,
+                hoverOffset: 4,
+            },
+        });
+    
+        let result = data.sort((a, b) => (a.count < b.count) ? 1 : -1)
+    
+        let winner = [result[0]]
+        for (let index = 1; index < result.length; index++) {
+            if(result[0].count === result[index].count){
+                winner.push(result[index])
+            }
+        }
+    
+        let multiWinner = []
+        for (let index = 0; index < winner.length; index++) {
+            multiWinner.push(winner[index].candidate)
+        }
+    
+        if(multiWinner.length > 1){
+            document.getElementById('winner').innerHTML = multiWinner + " <i>(equal)</i>"
+        }else{
+            document.getElementById('winner').innerHTML = winner[0].candidate
+        }
+    }
+</script>

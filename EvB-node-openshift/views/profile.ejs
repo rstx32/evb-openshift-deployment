@@ -1,0 +1,65 @@
+<!-- Content Row -->
+<div class="row">
+    <div class="col-lg mb">
+        <!-- Illustrations -->
+        <div class="card shadow mb">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">ID : <%= voter._id %> </h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-3">
+                        <img src="http://<%= process.env.PUBLIC_URL %>/photo/voters/<%= voter.photo %>" class="img-fluid">
+                    </div>
+                    <div class="col-9">
+                        <div class="container-fluid">
+                            <div class="row table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="2">
+                                                <h3>
+                                                    <%= voter.fullname %> 
+                                                </h3>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row">
+                                                Nim</th>
+                                            <td>
+                                                <%= voter.nim %> 
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">
+                                                Email</th>
+                                            <td>
+                                                <%= voter.email %> 
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">
+                                                Password</th>
+                                            <td>
+                                                <%= voter.password %> 
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">
+                                                Public Key</th>
+                                            <td>
+                                                <%= voter.public_key %> 
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

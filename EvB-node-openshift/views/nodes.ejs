@@ -1,0 +1,37 @@
+<!-- Content Row -->
+<div class="row">
+  <div class="col-lg-4">
+      <!-- card candidate -->
+      <div class="card shadow mb-4">
+          <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">All of Online Nodes : <%= nodes.length+1 %> </h6>
+          </div>
+          <div class="card-body">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Node ID</th>
+                  <th scope="col">Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">1</th>
+                  <td><%= thisNode %></td>
+                  <td>this node</td>
+                </tr>
+                  <% let index=2 %> 
+                  <% nodes.forEach(n => { %>
+                    <tr>
+                      <th scope="row"><%= index %></th>
+                      <td><%= n.id %> </td>
+                      <td>other node</td>
+                    </tr>
+                  <% index++ }) %>
+                </tbody>
+            </table>
+          </div>
+      </div>
+  </div>
+</div>

@@ -1,0 +1,150 @@
+<% if (flashMessage.errorMessage.length === 1) { %>
+    <div class="card mb-4 py-3 border-left-danger">
+        <div class="card-body">
+            <code>
+                <%= flashMessage.errorMessage[0] %> 
+            </code>
+        </div>
+    </div>
+<% } %>
+
+<!-- Content Row -->
+<div class="row">
+    <div class="col-lg-7">
+
+        <% if (flashMessage.successMessage[0]!==undefined) { %>
+            <div class="alert alert-success" role="alert">
+                <%= flashMessage.successMessage %>
+            </div>
+        <% } %> 
+
+        <!-- card voter -->
+        <div class="card shadow mb-4">
+            <!-- card header -->
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">List of All Complaints (<%= complaints.totalDocs %> remaining)</h6>
+            </div>
+            <!-- card header -->
+
+            <!-- card body -->
+            <div class="card-body table-responsive">
+
+                <div class="row">
+                    <div class="col-sm-2">
+                        <div class="col mb-3">
+                            <select class="form-select" id="displayItem" onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
+                                <% for( let index = 0; index <= 100; index+=25 ) { %>
+                                    <% if (index === complaints.limit) { %>
+                                        <option value="complaints?page=1&limit=<%= index %>" selected><%= index %></option>
+                                    <% } else{ %>
+                                        <option value="complaints?page=1&limit=<%= index %>"><%= index %></option>
+                                    <% } %> 
+                                <% } %>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-10">
+                        <form action="/complaints" class="col mb-3 input-group" action="get">
+                             <input type="text" name="email" class="form-control" placeholder="search complaint email..." aria-label="search complaint email..." aria-describedby="button-addon2">
+                        </form>
+                    </div>
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">from</th>
+                            <th scope="col">complaint</th>
+                            <th scope="col">action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% num = complaints.limit * (complaints.page-1) %> 
+                        <% complaints.docs.forEach(c => { num++ %>
+                            <tr>
+                                <th><%= num %></th>
+                                <td><%= c.email %> </td>
+                                <td><%= c.comment %> </td>
+                                <td>
+                                    <form action="/complaints" method="post">
+                                        <input type="hidden" name="email" value="<%= c.email %>">
+                                        <button type="submit" class="btn btn-success">Solve</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                      <!-- previous page button -->
+                      <% if (complaints.hasPrevPage) { %>
+                        <li class="page-item">
+                            <a class="page-link" href="/complaints?page=<%= complaints.page-1 %>&limit=<%= complaints.limit %>">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                      <% } else { %>      
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                      <% } %> 
+                      <!-- end previous page button -->
+
+                      <!-- pagination logic -->
+                      <% let modulo = complaints.page%10 %>
+                      <% if (modulo===0) { %>
+                        <% modulo = 10 %> 
+                      <% } %>
+                      <% let startPage = (complaints.page-modulo)+1 %>
+                      <% let endPage = startPage+9 %>
+
+                      <% if (endPage>=complaints.totalPages) { %>
+                        <% endPage = complaints.totalPages %> 
+                      <% } %>
+                      <!-- end pagination logic -->
+
+                      <!-- page selector -->
+                      <% for( let index = startPage; index <= endPage; index++ ) { %>
+                        <% if (complaints.page === index) { %>
+                            <li class="page-item active">
+                                <a class="page-link" href="/complaints?page=<%= index %>&limit=<%= complaints.limit %>"><%= index %></a>
+                            </li>
+                        <% } else {%>
+                            <li class="page-item">
+                                <a class="page-link" href="/complaints?page=<%= index %>&limit=<%= complaints.limit %>"><%= index %></a>
+                            </li>
+                        <% } %> 
+                      <% } %>
+                      <!-- end page selector -->
+
+                      <!-- next page button -->
+                      <% if (complaints.hasNextPage) { %>
+                        <li class="page-item">
+                            <a class="page-link" href="/complaints?page=<%= complaints.page+1 %>&limit=<%= complaints.limit %>">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                      <% } else { %>      
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                      <% } %> 
+                      <!-- end next page button -->
+                    </ul>
+                </nav>
+
+            </div>
+            <!-- end card body -->
+
+        </div>
+        <!-- end card voter -->
+    </div>
+</div>
+<!-- End Content Row -->

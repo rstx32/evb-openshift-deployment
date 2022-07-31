@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/x-icon" href="/EvB.png">
+    <title>EvB Node - Public Page</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/css/sb-admin-2.min.css" integrity="sha512-Mk4n0eeNdGiUHlWvZRybiowkcu+Fo2t4XwsJyyDghASMeFGH6yUXcdDI3CKq12an5J8fq4EFzRVRdbjerO3RmQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+</head>
+
+<body id="page-top">
+    
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <!-- Page Heading -->
+                    <div class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 d-sm-flex align-items-center">
+                        <h1 class="h3 mb-0 text-gray-800">Public Page</h1>
+                    </div>
+
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item">
+                            <a href="/login" class="btn btn-primary" tabindex="-1" role="button">Login</a>
+                        </li>
+                        <!-- End Nav Item - User Information -->
+
+                    </ul>
+
+                </nav>
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                    <!-- Candidates card -->
+                    <div class="row" id="candidateCount">
+
+                        <% recap.forEach(r => { %>
+                            <div class="col-lg mb">
+                                <!-- Illustrations -->
+                                <div class="card shadow mb">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary"><%= r.candidate %> </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="text-center">
+                                            <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;" src="http://<%= process.env.PUBLIC_URL %>/photo/candidates/<%= r.photo %>" alt="...">
+                                        </div>
+                                        <div class="text-center">
+                                            <h3>
+                                                Count : <b id="liveCount-<%- r._id %>"><%= r.count %></b> 
+                                            </h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }) %>
+
+                    </div>
+                    <!-- Candidates card -->
+
+                    <!-- candidates live chart -->
+                    <div class="row" style="margin-top: 25px;">
+                        <div class="col"></div>
+                        <!-- Donut Chart -->
+                        <div class="col-xl-64 col-lg-5">
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Donut Chart</h6>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="chart-pie pt-4">
+                                        <canvas id="myPieChart"></canvas>
+                                    </div>
+                                    <hr>
+                                    Current Leader is 
+                                    <h4>
+                                        <b>
+                                            <code>
+                                                <a id="winner">
+                                                    x
+                                                </a>
+                                            </code>
+                                        </b>
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col"></div>
+                    </div>
+                    <!-- candidates live chart -->
+
+                    <!-- row node & blocks -->
+                    <div class="row justify-content-md-center">
+                        <!-- node list -->
+                        <div class="col-lg-3 mb-5">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">All of Online Nodes : <%= nodes.length+1 %> </h6>
+                                </div>
+                                <div class="card-body table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Node ID</th>
+                                            <th scope="col">Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row">1</th>
+                                            <td><%= thisNode %></td>
+                                            <td>this node</td>
+                                        </tr>
+                                        <% let index=2 %> 
+                                        <% nodes.forEach(n => { %>
+                                        <tr>
+                                            <th scope="row"><%= index %></th>
+                                            <td><%= n.id %> </td>
+                                            <td>other node</td>
+                                        </tr>
+                                        <% index++ }) %>
+                                    </tbody>
+                                </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end node list -->
+
+                        <!-- blocks -->
+                        <div class="col-lg-5 mb-5">
+                            <!-- blocks card -->
+                            <div class="card shadow mb">
+                                <!-- card header -->
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">List of All Blocks</h6>
+                                </div>
+                                <!-- card header -->
+                                
+                                <div class="card-body">
+
+                                    <div class="row justify-content-start">
+                                        <div class="col-sm-2">
+                                            <div class="col mb-3">
+                                                <select class="form-select" id="displayItem" onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
+                                                    <% for( let index = 0; index <= 100; index+=25 ) { %>
+                                                        <% if (index === blocks.limit) { %>
+                                                            <option value="public?page=1&limit=<%= index %>" selected><%= index %></option>
+                                                        <% } else{ %>
+                                                            <option value="public?page=1&limit=<%= index %>"><%= index %></option>
+                                                        <% } %> 
+                                                    <% } %>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <!-- blocks content -->
+                                        <div class="accordion table-responsive" id="accordionExample">
+                                            <% blocks.data.forEach(b=> { %>
+                                                <div class="accordion-item">
+                            
+                                                    <h2 class="accordion-header" id="heading-<%= b.index %>">
+                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                                            data-bs-target="#collapse-<%= b.index %>" aria-expanded="false"
+                                                            aria-controls="collapse-<%= b.index %>">
+                                                            <%= b.hash %>
+                                                        </button>
+                                                    </h2>
+                            
+                                                    <div id="collapse-<%= b.index %>" class="accordion-collapse collapse"
+                                                        aria-labelledby="heading-<%= b.index %>" data-bs-parent="#accordionExample">
+                                                        <div class="accordion-body table-responsive">
+                                                            <table class="table">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <th scope="row">Index</th>
+                                                                        <td>:</td>
+                                                                        <td>
+                                                                            <%= b.index %>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th scope="row">Previous Hash</th>
+                                                                        <td>:</td>
+                                                                        <td>
+                                                                            <%= b.previousHash %>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th scope="row">Timestamp</th>
+                                                                        <td>:</td>
+                                                                        <td>
+                                                                            <%= b.timestamp %>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th scope="row">Voter ID</th>
+                                                                        <td>:</td>
+                                                                        <td>
+                                                                            <%= b.data.voterID %>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th scope="row">Candidate ID</th>
+                                                                        <td>:</td>
+                                                                        <td>
+                                                                            <%= b.data.candidateID %>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th scope="row">Signature</th>
+                                                                        <td>:</td>
+                                                                        <td>
+                                                                            <%= b.data.signature %>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th scope="row">hash</th>
+                                                                        <td>:</td>
+                                                                        <td>
+                                                                            <%= b.hash %>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th scope="row">Difficulty</th>
+                                                                        <td>:</td>
+                                                                        <td>
+                                                                            <%= b.difficulty %>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th scope="row">Nonce</th>
+                                                                        <td>:</td>
+                                                                        <td>
+                                                                            <%= b.nonce %>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                            
+                                                </div>
+                                                <% }) %>
+                                        </div>
+                                        <!-- end blocks content -->
+                                    </div>
+
+                                    
+                                </div>
+                                
+                                <!-- page navigation button -->
+                                <nav aria-label="Page navigation example">
+                                    <ul class="pagination justify-content-center">
+                                    <!-- previous page button -->
+                                    <% if (blocks.hasPrevPage) { %>
+                                        <li class="page-item">
+                                            <a class="page-link" href="/public?page=<%= blocks.page-1 %>&limit=<%= blocks.limit %>">
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </li>
+                                    <% } else { %>      
+                                        <li class="page-item disabled">
+                                            <a class="page-link" href="#">
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </li>
+                                    <% } %> 
+                                    <!-- end previous page button -->
+
+                                    <!-- pagination logic -->
+                                    <% let modulo = blocks.page%10 %>
+                                    <% if (modulo===0) { %>
+                                    <% modulo = 10 %> 
+                                    <% } %>
+                                    <% let startPage = (blocks.page-modulo)+1 %>
+                                    <% let endPage = startPage+9 %>
+
+                                    <% if (endPage>=blocks.totalPages) { %>
+                                    <% endPage = blocks.totalPages %> 
+                                    <% } %>
+                                    <!-- end pagination logic -->
+
+                                    <!-- page selector -->
+                                    <% for( let index = startPage; index <= endPage; index++ ) { %>
+                                        <% if (blocks.page === index) { %>
+                                            <li class="page-item active">
+                                                <a class="page-link" href="/public?page=<%= index %>&limit=<%= blocks.limit %>"><%= index %></a>
+                                            </li>
+                                        <% } else {%>
+                                            <li class="page-item">
+                                                <a class="page-link" href="/public?page=<%= index %>&limit=<%= blocks.limit %>"><%= index %></a>
+                                            </li>
+                                        <% } %> 
+                                    <% } %>
+                                    <!-- end page selector -->
+
+                                    <!-- next page button -->
+                                    <% if (blocks.hasNextPage) { %>
+                                        <li class="page-item">
+                                            <a class="page-link" href="/public?page=<%= blocks.page+1 %>&limit=<%= blocks.limit %>">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+                                    <% } else { %>      
+                                        <li class="page-item disabled">
+                                            <a class="page-link" href="#">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+                                    <% } %> 
+                                    <!-- end next page button -->                
+                                    </ul>
+                                </nav>
+                                <!-- page navigation button -->
+                            </div>
+                        </div>
+                        <!-- end blocks -->
+
+                        <!-- voters stats -->
+                        <div class="col-lg-4 mb-5">
+                            <div class="card shadow mb">
+                                <!-- card header -->
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Voters Statistic</h6>
+                                </div>
+                                <!-- card header -->
+
+                                <div class="card-body">
+                                    <table class="table">
+                                        <tbody>
+                                            <tr>
+                                                <td>Total Voters</td>
+                                                <td>:</td>
+                                                <td><%= voters.totalDocs %></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Total Voters Voted</td>
+                                                <td>:</td>
+                                                <td id="votersVoted"><%= blocks.total-1 %></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Total Voters Unvoted</td>
+                                                <td>:</td>
+                                                <td id="votersUnvoted"><%= voters.totalDocs - (blocks.total-1) %></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end voters stats -->
+
+                    </div>
+                    <!-- row node & blocks -->
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; rstx</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+
+    <!-- socket.io -->
+    <script>
+        var socket = io();
+
+        socket.on('broadcast', (message) => {
+            message.forEach(element => {
+                document.getElementById(`liveCount-${element._id}`).innerHTML = element.count;
+            });
+            createPieChart(message)
+        }).on('voters', (message) => {
+            document.getElementById('votersVoted').innerHTML = message.length-1
+            document.getElementById('votersUnvoted').innerHTML = <%= voters.totalDocs %> - (message.length-1)
+        })
+    </script>
+
+    <!-- chart -->
+    <script>
+        // Set new default font family and font color to mimic Bootstrap's default styling
+        Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+        Chart.defaults.global.defaultFontColor = '#858796';
+
+        var objectOfRecap = <%- JSON.stringify(recap)%>
+        createPieChart(objectOfRecap)
+
+        // Pie Chart
+        function createPieChart(data){
+            function getRandomColor() {
+                var letters = '0123456789ABCDEF'.split('');
+                var color = '#';
+                for (var i = 0; i < 6; i++ ) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+
+            var color = []
+            for (let index = 0; index < data.length; index++) {
+                color[index] = getRandomColor();
+            }
+
+            var candidate = data.map(c => c.candidate)
+            var count = data.map(c => c.count)
+            var ctx = document.getElementById("myPieChart");
+            var myPieChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: candidate,
+                    datasets: [{
+                        data: count,
+                        backgroundColor: color,
+                        hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
+                        hoverBorderColor: "rgba(234, 236, 244, 1)",
+                    }],
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    tooltips: {
+                        backgroundColor: "rgb(255,255,255)",
+                        bodyFontColor: "#858796",
+                        borderColor: '#dddfeb',
+                        borderWidth: 1,
+                        xPadding: 15,
+                        yPadding: 15,
+                        displayColors: false,
+                        caretPadding: 10,
+                    },
+                    legend: {
+                        display: false  
+                    },
+                    cutoutPercentage: 80,
+                    hoverOffset: 4,
+                },
+            });
+        
+            let result = data.sort((a, b) => (a.count < b.count) ? 1 : -1)
+        
+            let winner = [result[0]]
+            for (let index = 1; index < result.length; index++) {
+                if(result[0].count === result[index].count){
+                    winner.push(result[index])
+                }
+            }
+        
+            let multiWinner = []
+            for (let index = 0; index < winner.length; index++) {
+                multiWinner.push(winner[index].candidate)
+            }
+        
+            if(multiWinner.length > 1){
+                document.getElementById('winner').innerHTML = multiWinner + " <i>(equal)</i>"
+            }else{
+                document.getElementById('winner').innerHTML = winner[0].candidate
+            }
+        }
+    </script>
+</body>
+
+</html>
