@@ -10,76 +10,53 @@
 
 
 ## Environment EvB-admin
-*http port, ex: "80"*
-**HTTP_PORT**
+**HTTP_PORT**, *http port, ex: "80"*
 
-*mongodb url, ex: "mongodb://username:password@localhost:27017/databaseName"*
-**MONGODB_URL**
+**MONGODB_URL**, *mongodb url, ex: "mongodb://username:password@localhost:27017/databaseName"*
 
-*a random string, ex: "iawgn98ah4gawn"*
-**SESSION_SECRET**
+**SESSION_SECRET**, *a random string, ex: "iawgn98ah4gawn"*
 
-*a random string, ex: "ybgaiwrbg987igun"*
-**JWT**
+**JWT**, *a random string, ex: "ybgaiwrbg987igun"*
 
-*admin username default registration, ex: "admin"*
-**USERNAME_ADMIN**
+**USERNAME_ADMIN**, *admin username default registration, ex: "admin"*
 
-*admin email default registration, ex: "admin@gmail.com"*
-**EMAIL_ADMIN**
+**EMAIL_ADMIN**, *admin email default registration, ex: "admin@gmail.com"*
 
-*fake email service username, ex: "iinbagwiry"*
-**USERNAME_EMAIL**
+**USERNAME_EMAIL**, *fake email service username, ex: "iinbagwiry"*
 
-*fake email service password, ex: "ing47hgfi2"*
-**PASSWORD_EMAIL**
+**PASSWORD_EMAIL**, *fake email service password, ex: "ing47hgfi2"*
 
 ## Environment EvB-validator
-*http port, ex: "80"*
-**HTTP_PORT**
+**HTTP_PORT**, *http port, ex: "80"*
 
-*evb-admin url, ex: "localhost:8080"*
-**API_URL**
+**API_URL**, *evb-admin url, ex: "localhost:8080"*
 
-*mongodb url, ex: "mongodb://username:password@localhost:27017/databaseName"*
-**MONGODB_URL**
+**MONGODB_URL**, *mongodb url, ex: "mongodb://username:password@localhost:27017/databaseName"*
 
-*public url, ex: "localhost:8080"*
-**PUBLIC_URL**
+**PUBLIC_URL**, *public url, ex: "localhost:8080"*
 
-*a random string, ex: "iawgn98ah4gawn"*
-**SESSION_SECRET**
+**SESSION_SECRET**, *a random string, ex: "iawgn98ah4gawn"*
 
-*a random string, ex: "ybgaiwrbg987igun"*
-**JWT**
+**JWT**, *a random string, ex: "ybgaiwrbg987igun"*
 
-*account for validator, format: username email, ex: "validatorA validatora@gmail.com *validatorB validatorb@gmail.com"
-**ACCOUNT**
+*account for validator, format: username email, ex: "validatorA validatora@gmail.com
+**ACCOUNT**, *validatorB validatorb@gmail.com"
 
-*fake email service username, ex: "iinbagwiry"*
-**USERNAME_EMAIL**
+**USERNAME_EMAIL**, *fake email service username, ex: "iinbagwiry"*
 
-*fake email service password, ex: "ing47hgfi2"*
-**PASSWORD_EMAIL**
+**PASSWORD_EMAIL**, *fake email service password, ex: "ing47hgfi2"*
 
 ## Environment EvB-node
-*http port, ex: "80"*
-**HTTP_PORT**
+**HTTP_PORT**, *http port, ex: "80"*
 
-*evb-admin url, ex: "localhost:8080"*
-**API_URL**
+**API_URL**, *evb-admin url, ex: "localhost:8080"*
 
-*a random string, ex: "iawgn98ah4gawn"*
-**SESSION_SECRET**
+**SESSION_SECRET**, *a random string, ex: "iawgn98ah4gawn"*
 
-*a random string, ex: "ybgaiwrbg987igun"*
-**JWT**
+**JWT**, *a random string, ex: "ybgaiwrbg987igun"*
 
-*number to challenge for creating block, ex: "5"*
-**DIFFICULTY**
+**DIFFICULTY**, *number to challenge for creating block, ex: "5"*
 
-*name of this node, ex: "evb-node1"*
-**NODE_ID**
+**NODE_ID**, *name of this node, ex: "evb-node1"*
 
-*evb-admin link for public accessible, ex: "localhost:8080"*
-**PUBLIC_URL**
+**PUBLIC_URL**, *evb-admin link for public accessible, ex: "localhost:8080"*
