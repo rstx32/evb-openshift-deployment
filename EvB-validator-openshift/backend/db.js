@@ -254,7 +254,7 @@ const createAccount = async (username, email) => {
 
   if (account === null) {
     // register validator
-    Validator.register({ username: username, active: false }, password)
+    Validator.register({ username: username }, password)
 
     // insert validator email to database
     setTimeout(async () => {
@@ -268,7 +268,6 @@ const createAccount = async (username, email) => {
           },
         }
       )
-      console.log(`set email success : ${lowercaseEmail}`)
     }, 500)
 
     // generate JWT for each validator
