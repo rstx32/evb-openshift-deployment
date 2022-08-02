@@ -13,6 +13,7 @@ const getVoters = async (query, validatorID) => {
   let voters = {}
   const validatorToken = await getSingleValidator(validatorID, 'findbyid')
   const token = validatorToken.token
+  console.log(token)
 
   if (query.fullname === undefined) {
     voters = await fetch(
