@@ -250,7 +250,6 @@ app.listen(process.env.HTTP_PORT, () => {
 ;(() => {
   const list = process.env.ACCOUNT.split(' ')
   for (let index = 0; index < list.length; index += 2) {
-    console.log(list[index])
     createAccount(list[index], list[index + 1])
   }
 })()
