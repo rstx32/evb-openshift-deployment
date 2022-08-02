@@ -257,7 +257,7 @@ const createAccount = async (username, email) => {
     Validator.register({ username: username }, password)
 
     // insert validator email to database
-    setTimeout(async () => {
+    // setTimeout(async () => {
       await Validator.updateOne(
         {
           username: username,
@@ -268,12 +268,12 @@ const createAccount = async (username, email) => {
           },
         }
       )
-    }, 500)
+    // }, 500)
 
     // generate JWT for each validator
-    setTimeout(() => {
+    // setTimeout(() => {
       generateJWT(username)
-    }, 1000)
+    // }, 1000)
 
     const fileHTML = await ejs.renderFile('views/email.ejs', {
       header: `EvB Validator Login Password`,
