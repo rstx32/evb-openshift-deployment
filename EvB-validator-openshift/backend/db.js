@@ -223,7 +223,7 @@ const generateJWT = async (username) => {
     expiresIn: '7d',
   })
 
-  return await Validator.updateOne(
+  await Validator.updateOne(
     { username: username },
     {
       $set: {
