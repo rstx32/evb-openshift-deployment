@@ -489,7 +489,7 @@ app.post('/change-password', async (req, res) => {
 
 // certbot
 app.get('/.well-known/acme-challenge/XgQ1SnUlKcDj9rrcdm7Q8hD7TeL2cbcv6IzYZ6MqZP8', (req, res) => {
-  res.sendFile(`../public/.well-known/acme-challenge/XgQ1SnUlKcDj9rrcdm7Q8hD7TeL2cbcv6IzYZ6MqZP8.yDG055r0ZLJ6JVpmYMbqtzaIAUIicx4iofWyTFNSd4w`)
+  res.sendFile(`./public/.well-known/acme-challenge/XgQ1SnUlKcDj9rrcdm7Q8hD7TeL2cbcv6IzYZ6MqZP8.yDG055r0ZLJ6JVpmYMbqtzaIAUIicx4iofWyTFNSd4w`)
 })
 
 // page not found
