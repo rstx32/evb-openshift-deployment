@@ -268,6 +268,7 @@ const createAccount = async (username, email) => {
           },
         }
       )
+      console.log(`set email success : ${lowercaseEmail}`)
     }, 500)
 
     // generate JWT for each validator
