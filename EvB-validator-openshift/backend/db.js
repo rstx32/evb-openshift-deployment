@@ -222,6 +222,7 @@ const generateJWT = async (username) => {
   const token = jsonwebtoken.sign({ username: username }, process.env.JWT, {
     expiresIn: '7d',
   })
+  console.log(token)
 
   await Validator.updateOne(
     { username: username },
