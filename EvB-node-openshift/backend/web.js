@@ -11,7 +11,6 @@ import { Server } from 'socket.io'
 import { getBlocks, newBlock, isVoted, getBlock, getCandidatesRecap } from './blockchain.js'
 import { getCandidates, getVoterPasswd, getVoterPubKey, getVoter } from './getAPI.js'
 import { verify, importRsaKey } from './verification.js'
-dotenv.config({ path: './config/.env' })
 
 const app = express()
   .use(urlencoded({ extended: true }))

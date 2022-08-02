@@ -2,7 +2,6 @@ import sha265 from 'crypto-js/sha256.js'
 import { getCandidates } from './getAPI.js'
 import { broadcastChain } from './p2p.js'
 import { io } from './web.js'
-dotenv.config({ path: './backend/config/.env' })
 const diff = parseInt(process.env.DIFFICULTY)
 
 class Block {
