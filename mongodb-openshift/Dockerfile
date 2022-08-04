@@ -1,2 +1,2 @@
-FROM quay.io/rstx32/mongo:latest
-#COPY ./mongo-init.js /docker-entrypoint-initdb
+FROM hub.docker.com/mongo:latest
+COPY ./mongo-init.js /docker-entrypoint-initdb
