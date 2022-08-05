@@ -1,0 +1,60 @@
+
+
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    name: "mongodb-server"
+    namespace: evb-test
+    labels:
+      app: "mongo"
+  spec:
+    containers:
+    - name: mongodb-server
+      image: "quay.io/rstx32/mongo:latest"
+      env:
+      - name: MONGO_INITDB_ROOT_USERNAME
+        value: myrootuser
+      - name: MONGO_INITDB_ROOT_PASSWORD
+        value: myrootpass
+      ports:
+      - containerPort:  27017
+        name:  mongodb-server
+      volumeMounts:
+      - name: mongodb-data
+        mountPath: /data/db
+    volumes:
+      - name: mongodb-data
+        persistentVolumeClaim:
+          claimName: mongodb-claim
+    restartPolicy: Always
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: "mongodb-server"
+    namespace: evb-test
+    labels:
+      app: "mongo"
+  spec:
+    selector:
+      app: mongodb-server
+    ports:
+    - name: mongodb-server
+      protocol: TCP
+      port: 27017
+      targetPort: 27017
+
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: mongodb-claim
+    namespace: evb-test
+    labels:
+      app: mongo
+  spec:
+    storageClassName: mongodb-volume
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
